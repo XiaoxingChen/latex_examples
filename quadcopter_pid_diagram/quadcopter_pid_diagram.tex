@@ -1,0 +1,87 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Welcome to Overleaf --- just edit your LaTeX on the left,
+% and we'll compile it for you on the right. If you give
+% someone the link to this page, they can edit at the same
+% time. See the help menu above for more info. Enjoy!
+%
+% Note: you can export the pdf to see the result at full
+% resolution.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Title: Block diagram of Third order noise shaper in Compact Disc Players
+% Author: Ramón Jaramillo
+
+\documentclass{ctexart}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\usepackage{textcomp}
+\usepackage{tikz}
+ 
+\begin{document}
+ 
+\usetikzlibrary{shapes,arrows}
+\tikzstyle{block} = [draw, fill=blue!20, rectangle, 
+    minimum height=3em, minimum width=3em]
+\tikzstyle{sum} = [draw, fill=blue!20, circle, node distance=1cm]
+\tikzstyle{input} = [coordinate]
+\tikzstyle{output} = [coordinate]
+
+% The block diagram code is probably more verbose than necessary
+\begin{figure}
+    % \scalebox{0.5}
+    
+
+\begin{tikzpicture}[node distance=3cm,>=latex', scale=0.5, transform shape]
+    \node [input, name=x_y_input] {};
+    \node [sum, below of=x_y_input] (sum_x_y_input) {};
+    \node [block, right of=sum_x_y_input] (x_y_controller) {XY位置控制器};
+
+    \node [sum, right of=x_y_controller, node distance=3cm] (pitch_sum) {};
+    \node [sum, above of=pitch_sum, node distance=2cm] (z_sum) {};
+    \node [sum, below of=pitch_sum, node distance=2cm] (roll_sum) {};
+    \node [sum, below of=roll_sum, node distance=2cm] (yaw_sum) {};
+
+    \node [block, right of=pitch_sum] (pitch_controller) {俯仰角控制器};
+    \node [block, right of=z_sum] (z_controller) {高度控制器};
+    \node [block, right of=roll_sum] (roll_controller) {横滚角控制器};
+    \node [block, right of=yaw_sum] (yaw_controller) {偏航角控制器};
+
+    \node [block, right of=roll_controller, node distance=4cm] (rot_dynamic) {转动动力学子系统};
+    \node [block, above right of=rot_dynamic, node distance=4cm] (trans_dynamic) {平动动力学子系统};
+
+    \draw [->] (sum_x_y_input) -- (x_y_controller);
+    \draw [->] (pitch_sum) -- (pitch_controller);
+    \draw [->] (roll_sum) -- (roll_controller);
+    \draw [->] (yaw_sum) -- (yaw_controller);
+    \draw [->] (z_sum) -- (z_controller);
+
+    \draw [->] (z_controller) -- (13,1) -- (13,0.5) -- (trans_dynamic);
+    \draw [->] (rot_dynamic) -- (13,-0.5) -- (trans_dynamic);
+
+    \draw [->] (pitch_controller) -- (11,-1) -- (11,-2.5) --(rot_dynamic);
+    \draw [->] (roll_controller) -- (rot_dynamic);
+    \draw [->] (yaw_controller) -- (11,-5) -- (11,-3.5) -- (rot_dynamic);
+
+    % We draw an edge between the controller and system block to 
+    % calculate the coordinate u. We need it to place the measurement block. 
+    % \draw [->] (i_controller) -- node[name=u] {} (sum2);
+    % \draw [->] (p_controller) -- (7,2)-- node[name=u] {} (sum2);
+    % \draw [->] (d_controller) -- (7,-2) -- node[name=u] {} (sum2);
+    % \draw [->] (sum2) -- node[name=u] {} (process) ;
+    
+
+    % Once the nodes are placed, connecting them is easy. 
+    % \draw [draw,->] (input) -- node {期望} (sum) node[pos=0.9, below]{+};
+    % \draw [->] (sum) -- node {} (i_controller) node[pos=0.3, above, name=error] {误差}{};
+    % \draw [->] (process) -- node [name=out] {输出}(output);
+    % \draw [->] (out) |- (2,-3) -| node[pos=0.99] {} node [near end] {} (sum) node[pos=0.95, right]{-};
+    % \draw [->] (error) |- (3.4, 0) -- (3.4,-2) -- (d_controller) {};
+    % \draw [->] (error) |- (3.4, 0) -- (3.4,2) -- (p_controller) {};
+
+\end{tikzpicture}
+\end{figure} 
+\end{document}
+
+
+
