@@ -1,0 +1,44 @@
+\documentclass{ctexart}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\usepackage{textcomp}
+\usepackage{tikz}
+ 
+\begin{document}
+\usetikzlibrary{shapes,arrows}
+
+\tikzstyle{block} = [draw, fill=blue!20, rectangle, 
+    minimum height=3em, minimum width=3em]
+\tikzstyle{sum} = [draw, fill=blue!20, circle, node distance=1cm]
+\tikzstyle{input} = [coordinate]
+\tikzstyle{output} = [coordinate]
+\tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
+
+% The block diagram code is probably more verbose than necessary
+\begin{figure}
+\centering
+
+\begin{tikzpicture}[auto, node distance=2cm,>=latex']
+    \node [input, name=input] {};
+    \node [sum, right of=input] (sum) {};
+    \node [block, right of=sum] (controller) {\(k_p + \frac{k_I}{s}\)};
+    \node [sum, right of=controller, pin={[pinstyle]above:\(y_u\)}, node distance=2cm] (sum2) {};
+    \node [block, right of=sum2, node distance=2cm] (integral) {\(\int\)};
+    % We draw an edge between the controller and system block to 
+    % calculate the coordinate u. We need it to place the measurement block. 
+    \draw [->] (controller) -- node[name=u] {} node[pos=0.8, below] {+} (sum2);
+    \draw [->] (sum2) -- node[name=u] {} (integral) node[pos=0.1, above] {+};
+    \node [output, right of=integral] (output) {};
+
+    % Once the nodes are placed, connecting them is easy. 
+    \draw [draw,->] (input) -- node {$y_x$} (sum) node[pos=0.9, below]{+};
+    \draw [->] (sum) -- node {} (controller);
+    \draw [->] (integral) -- node [name=out] {$\hat x$}(output);
+    \draw [->] (out) |- (1,-1.5) -| node[pos=0.99] {} node [near end] {} (sum) node[pos=0.92, right]{-};
+
+\end{tikzpicture}
+\caption{}
+\label{fig:complement_filter_control_diagram}
+\end{figure}
+
+\end{document}
