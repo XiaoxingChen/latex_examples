@@ -50,7 +50,7 @@
     \draw [->] (diff) -- node {} (tangent_space_error) node[pos=0.5, above] {\(\tilde{R}\)};
     \draw [->] (tangent_space_error) -- node {} (gain) ;
     \draw [->] (gain) -- node {} (sum) node[pos=0.8, below] {+};
-    \draw [->] (sum) -- node {} (kinematics) ;
+    \draw [->] (sum) -- node {A} (kinematics) ;
     \draw [->] (kinematics) -- node [name=mid_out] {\(\hat R\)} (output) ;
     \draw [->] (mid_out) |- (7,-2) -- (inver_of_error){};
     \draw [->] (inver_of_error) -- (diff){};
